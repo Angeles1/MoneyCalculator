@@ -10,37 +10,47 @@ import java.util.Scanner;
  * @author angeles
  */
 public class MoneyCalculator {
+    
+    private double amount;
+    private double exchangeRate;
+    
 
     public static void main(String[] args) throws Exception {
-        System.out.println("Introduzca una cantidad de dolares");
-        Scanner scanner = new Scanner (System.in);
-        double amount = Double.parseDouble(scanner.next());
-        double exchangeRate = getExchangeRate("USD","EUR");
-        System.out.println(amount+" USD equivalen a "+amount*exchangeRate+ " EUR");
-        
+        MoneyCalculator moneyCalculator = new MoneyCalculator();
+        moneyCalculator.execute();
     }
-    
-    private static double getExchangeRate(String from, String to) throws Exception{
-        URL url = new URL ("http://api.fixer.io/latest?base=" + from + "&symbols="+to);
+   
+
+    private void execute() throws Exception {
+        input();
+        process();
+        output();
+    }
+
+    private void input() {
+        System.out.println("Introduzca cantidad en dolares: ");
+        Scanner scanner = new Scanner (System.in);
+        amount = Double.parseDouble(scanner.next());
+    }
+
+    private void process() throws Exception {
+        exchangeRate = getExchangeRate("USD","EUR");
+    }
+
+    private void output() {
+        System.out.println(amount+ "USD equivale a "+amount * exchangeRate + " EUR");
+    }
+
+    private double getExchangeRate(String from, String to) throws Exception{
+        URL url = new URL ("http://api.fixer.io/latest?base="+from+ "&symbols="+to);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         InputStreamReader input = new InputStreamReader (connection.getInputStream());
-        try (BufferedReader reader = new BufferedReader(input)){
+        try(BufferedReader reader = new BufferedReader (input)){
             String line = reader.readLine();
-            line= line.substring(line.indexOf(to)+5, line.indexOf("}"));
+            line = line.substring(line.indexOf(to)+5,line.indexOf("}"));
             return Double.parseDouble(line);
         }
-    
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
         
     }
     
